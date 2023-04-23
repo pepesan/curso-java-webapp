@@ -86,15 +86,23 @@ public class JDBCServlet extends HttpServlet {
         Integer id = Integer.parseInt(request.getParameter("id"));
         // buscar en la bbdd el elemento con ese id
         Language language = this.languageRepository.findById(id);
-        // Eliminar el objeto de la bbdd
-        this.languageRepository.deleteById(id);
-        // Deveolver la respuesta
+        System.out.println(language);
+        // Devolver la respuesta
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(200);
         ServletOutputStream out = response.getOutputStream();
         // Imprimir datos en la salida JSON
         StringBuilder salida = new StringBuilder();
-        salida.append(language.toJson());
+        if (!language.getLanguageId().equals(0)) {
+            // Eliminar el objeto de la bbdd
+            this.languageRepository.deleteById(id);
+            response.setStatus(200);
+            salida.append(language.toJson());
+        }else {
+            response.setStatus(404);
+            salida.append("{" +
+                    "\"error\": \"No existe el elemento con ese id\""+
+                    "}");
+        }
         out.print(salida.toString());
         // Cerrar la salida
         out.close();

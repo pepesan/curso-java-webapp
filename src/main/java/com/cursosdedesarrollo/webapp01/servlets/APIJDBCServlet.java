@@ -4,30 +4,31 @@ import com.cursosdedesarrollo.webapp01.common.Conexion;
 import com.cursosdedesarrollo.webapp01.entities.Language;
 import com.cursosdedesarrollo.webapp01.repositories.LanguageRepository;
 import com.cursosdedesarrollo.webapp01.repositories.LanguageRepositoryImpl;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.stream.Collectors;
 
 @WebServlet(
-        name = "JDBCServlet",
-        urlPatterns = {"/jdbc"},
+        name = "APIJDBCServlet",
+        urlPatterns = {"/api"},
         loadOnStartup = 1
 )
-public class JDBCServlet extends HttpServlet {
+public class APIJDBCServlet extends HttpServlet {
 
     private  Conexion conection = new Conexion();
 
     private LanguageRepository languageRepository;
 
-    public JDBCServlet(){
+    public APIJDBCServlet(){
         super();
         languageRepository = new LanguageRepositoryImpl(conection);
         System.out.println(languageRepository);
@@ -153,9 +154,29 @@ public class JDBCServlet extends HttpServlet {
     }
 
     private void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String name;
+        String lastUpdate;
+        System.out.println(request.getHeader("content-type"));
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            System.out.println(headerName + " = " + headerValue);
+        }
         // Recoger los datos desde la petición
-        String name = request.getParameter("name");
-        String lastUpdate = request.getParameter("lastUpdate");
+        if (request.getHeader("content-type").equals("application/json")) {
+            System.out.println("entrando por JSON");
+            String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(body);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(body);
+            name = jsonNode.get("name").asText();
+            lastUpdate = jsonNode.get("lastUpdate").asText();
+        }else {
+            System.out.println("entrando por Params");
+            name = request.getParameter("name");
+            lastUpdate = request.getParameter("lastUpdate");
+        }
         // limpio los campos de posibles inyecciones
         // validaciones de los campos
         // Crear el objeto del lenguaje a meter en la BBDD

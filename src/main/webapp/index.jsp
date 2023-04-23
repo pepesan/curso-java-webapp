@@ -7,6 +7,8 @@
                 <li><a href="${pageContext.request.contextPath}/json">JsonServlet</a> </li>
                 <li><a href="${pageContext.request.contextPath}/jsp">JspServlet</a> </li>
                 <li><a href="${pageContext.request.contextPath}/jspjson">JspJsonServlet</a> </li>
+                <li><a href="${pageContext.request.contextPath}/jdbc">JDBCServlet</a> </li>
+                <li><a href="${pageContext.request.contextPath}/api">APIJDBCServlet</a> </li>
             </ul>
         </nav>
     </header>

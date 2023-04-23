@@ -1,4 +1,4 @@
-package com.cursosdedesarrollo.webapp01;
+package com.cursosdedesarrollo.webapp01.servlets;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,11 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(
-        name = "JspJsonServlet",
-        urlPatterns = "/jspjson",
+        name = "JspServlet",
+        urlPatterns = "/jsp",
         loadOnStartup = 1
 )
-public class JspJsonServlet extends HttpServlet {
+public class JspServlet extends HttpServlet {
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -26,7 +26,7 @@ public class JspJsonServlet extends HttpServlet {
         request.setAttribute("data", datos);
         request.setAttribute("numero", numero);
         request.setAttribute("numero2",otroNumero);
-        request.getRequestDispatcher("/WEB-INF/json.jsp")
+        request.getRequestDispatcher("/WEB-INF/page.jsp")
                 .forward(request, response);
     }
 }
